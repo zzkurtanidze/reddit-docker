@@ -2,19 +2,19 @@ services:
   server:
     container_name: reddit-server
     restart: always
-    build: ./reddit-clone-api/
+    build: ./apps/reddit-clone-api/
     ports:
       - '4000:4000'
     volumes:
-      - ./reddit-clone-api:/usr/src/app/reddit-clone-api
+      - ./apps/reddit-clone-api:/usr/src/app/reddit-clone-api
     links:
       - mongo
   client:
     container_name: reddit-front
     restart: always
-    build: ./reddit-clone-front
+    build: ./apps/reddit-clone-front
     volumes:
-      - ./reddit-clone-front:/usr/src/app/reddit-clone-front
+      - ./apps/reddit-clone-front:/usr/src/app/reddit-clone-front
     ports:
       - '3000:3000'
   mongo:
