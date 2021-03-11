@@ -1,25 +1,32 @@
 services:
   server:
-    container_name: reddit-server
-    restart: always
-    build: ./apps/reddit-clone-api/
+    image: node:10.16-alpine
+    container_name: reddit-api
+    expose:
+      - '4000'
     ports:
       - '4000:4000'
     volumes:
       - ./apps/reddit-clone-api:/usr/src/app/reddit-clone-api
+    working_dir: /usr/src/app/reddit-clone-api
     links:
       - mongo
+    command: sh -c 'tail -f /dev/null'
+    
   client:
+    image: node:10.16-alpine
     container_name: reddit-front
-    restart: always
-    build: ./apps/reddit-clone-front
+    expose:
+      - '3000'
     volumes:
       - ./apps/reddit-clone-front:/usr/src/app/reddit-clone-front
+    working_dir: /usr/src/app/reddit-clone-front
     ports:
       - '3000:3000'
+    command: sh -c 'tail -f /dev/null'
+
   mongo:
     hostname: mongo
-    restart: always
     image: mongo
     ports:
       - '27017:27017'
