@@ -6,7 +6,7 @@ source "${DIR}"/../.env
 
 clear
 
-TOTAL_STEPS=2
+TOTAL_STEPS=3
 CURRENT_STEP=0
 
 echo -e "${COLOR_GREEN} Welcome to ${PROJECT_NAME} installer! ${COLOR_GREEN} \n\n\n"
@@ -31,9 +31,27 @@ else
   git clone --single-branch --branch "${FRONT_GIT_BRANCH}" "${FRONT_GIT_REPO}" "${FRONT_DIR}"
 fi
 
+echo -e "\n\n\n"
+
+CURRENT_STEP=$((CURRENT_STEP + 1))
+
+echo -e "${COLOR_BLUE}[${CURRENT_STEP}/${TOTAL_STEPS}] Installing packages. \n\n\n"
+
+cd "${API_DIR}"
+npm install
+npm run serve
+
+cd "${DIR}"/..
+
+cd "${FRONT_DIR}"
+npm install
+npm start
+cd "${DIR}"/..
+
+
 CURRENT_STEP=$((CURRENT_STEP + 1))
 echo -e "${COLOR_BLUE}[${CURRENT_STEP}/${TOTAL_STEPS}] Restarting containers...\n\v${COLOR_NONE}"
-docker-compose stop
+docker-compose down
 docker-compose pull
 docker-compose up -d --remove-orphans
 
