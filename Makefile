@@ -11,7 +11,7 @@ up:
 .PHONY: stop
 stop:
 	@echo "Stopping containers for $(PROJECT_NAME)..."
-	@docker-compose stop
+	@docker-compose down
 
 
 ## down	:	Stop containers.
@@ -22,11 +22,30 @@ down: stop
 start-front:
 	@echo "Starting front-end application..."
 	@docker-compose exec node npm install forever -g
-	@docker-compose exec node forever start ./node_modules/.bin/ng serve --host 0.0.0.0 --port 4200 --disable-host-check
+	@docker-compose exec node forever start ./node_modules/.bin/ng serve --host 0.0.0.0 --port 4000 --disable-host-check
 	@docker-compose exec node forever start dist/server
+
+## sh-api : Acccess shell api
+.PHONY: sh-api
+sh-api:
+	@docker exec -it reddit-server sh
+
+
+## sh-api: Access shell front
+.PHONY: sh-front
+sh-front:
+	@docker exec -it reddit-front sh
+
+## ps
+
+.PHONY: ps
+ps:
+	@docker-compose ps -a
+
 
 ## install-project	:	Run project installer.
 
 .PHONY: install-project
 install-project:
+	@./scripts/pre-install.sh
 	@./scripts/install.sh
