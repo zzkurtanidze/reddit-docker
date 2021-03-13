@@ -28,7 +28,7 @@ start-front:
 ## sh-api : Acccess shell api
 .PHONY: sh-api
 sh-api:
-	@docker exec -it reddit-server sh
+	@docker exec -it reddit-api sh
 
 
 ## sh-api: Access shell front
