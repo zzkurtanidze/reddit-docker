@@ -6,6 +6,7 @@ up:
 	@echo "Starting up containers for $(PROJECT_NAME)..."
 	docker-compose pull
 	docker-compose up -d --remove-orphans
+	docker-compose logs -f
 
 ## stop	:	Stop containers.
 .PHONY: stop
@@ -17,13 +18,6 @@ stop:
 ## down	:	Stop containers.
 .PHONY: down
 down: stop
-
-.PHONY: start-front
-start-front:
-	@echo "Starting front-end application..."
-	@docker-compose exec node npm install forever -g
-	@docker-compose exec node forever start ./node_modules/.bin/ng serve --host 0.0.0.0 --port 4000 --disable-host-check
-	@docker-compose exec node forever start dist/server
 
 ## sh-api : Acccess shell api
 .PHONY: sh-api
@@ -41,7 +35,6 @@ sh-front:
 .PHONY: ps
 ps:
 	@docker-compose ps -a
-
 
 ## install-project	:	Run project installer.
 

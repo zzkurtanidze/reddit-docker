@@ -39,13 +39,11 @@ echo -e "${COLOR_BLUE}[${CURRENT_STEP}/${TOTAL_STEPS}] Installing packages. \n\n
 
 cd "${API_DIR}"
 npm install
-npm run serve
 
 cd "${DIR}"/..
 
 cd "${FRONT_DIR}"
 npm install
-npm start
 cd "${DIR}"/..
 
 

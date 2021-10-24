@@ -10,9 +10,9 @@ services:
       - ./apps/reddit-clone-api:/usr/src/app/reddit-clone-api
     working_dir: /usr/src/app/reddit-clone-api
     links:
-      - mongo
-    command: sh -c 'tail -f /dev/null'
-    
+      - mongodb
+    command: npm run serve
+      
   client:
     image: node:10.16-alpine
     container_name: reddit-front
@@ -23,10 +23,16 @@ services:
     working_dir: /usr/src/app/reddit-clone-front
     ports:
       - '3000:3000'
-    command: sh -c 'tail -f /dev/null'
+    command: npm start
 
-  mongo:
+  mongodb:
     hostname: mongo
     image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=reddit
     ports:
       - '27017:27017'
+    # volumes:
+    #   - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
