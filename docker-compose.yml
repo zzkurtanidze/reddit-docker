@@ -1,7 +1,7 @@
 services:
   server:
     image: node:10.16-alpine
-    container_name: reddit-api
+    container_name: api
     expose:
       - '4000'
     ports:
@@ -15,7 +15,7 @@ services:
       
   client:
     image: node:10.16-alpine
-    container_name: reddit-front
+    container_name: front
     expose:
       - '3000'
     volumes:
@@ -27,6 +27,7 @@ services:
 
   mongodb:
     hostname: mongo
+    container_name: db
     image: mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin

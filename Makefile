@@ -22,13 +22,17 @@ down: stop
 ## sh-api : Acccess shell api
 .PHONY: sh-api
 sh-api:
-	@docker exec -it reddit-api sh
+	@docker exec -it api sh
 
 
-## sh-api: Access shell front
+## sh-front: Access shell front
 .PHONY: sh-front
 sh-front:
-	@docker exec -it reddit-front sh
+	@docker exec -it front sh
+
+.PHONY: sh-db
+sh-db:
+	@docker exec -it db sh
 
 ## ps
 
@@ -42,3 +46,7 @@ ps:
 install-project:
 	@./scripts/pre-install.sh
 	@./scripts/install.sh
+
+.PHONY: logs
+logs:
+	@docker-compose logs -f
