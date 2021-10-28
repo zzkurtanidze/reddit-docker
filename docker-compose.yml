@@ -1,7 +1,16 @@
 services:
+  # nginx: 
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+
   server:
     image: node:10.16-alpine
-    container_name: api
+    container_name: ${PROJECT_NAME}_api
     expose:
       - '4000'
     ports:
@@ -11,11 +20,19 @@ services:
     working_dir: /usr/src/app/reddit-clone-api
     links:
       - mongodb
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME}_api.rule=Host(`${API_URL}`)"
+      - "traefik.http.routers.${PROJECT_NAME}_api.entrypoints=secure"
+      - "traefik.http.services.${PROJECT_NAME}_api.loadbalancer.sticky.cookie=true"
+      - "traefik.http.services.${PROJECT_NAME}_api.loadbalancer.sticky.cookie.name=sticky_speed_cow"
+      - "traefik.http.services.${PROJECT_NAME}_api.loadbalancer.sticky.cookie.httpOnly=true"
+      - "traefik.http.services.${PROJECT_NAME}_api.loadbalancer.sticky.cookie.secure=true"
     command: npm run serve
       
   client:
     image: node:10.16-alpine
-    container_name: front
+    container_name: ${PROJECT_NAME}_front
     expose:
       - '3000'
     volumes:
@@ -23,11 +40,14 @@ services:
     working_dir: /usr/src/app/reddit-clone-front
     ports:
       - '3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME}_front.rule=Host(`${FRONT_URL}`)"
     command: npm start
 
   mongodb:
     hostname: mongo
-    container_name: db
+    container_name: ${PROJECT_NAME}_db
     image: mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
@@ -37,3 +57,14 @@ services:
       - '27017:27017'
     # volumes:
     #   - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+
+  traefik:
+    image: "traefik:v2.5"
+    container_name: traefik
+    command: --api.insecure=true --providers.docker
+    ports:
+      - '80:80'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
